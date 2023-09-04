@@ -1,18 +1,68 @@
-*/config/development
-*/logs/log-*.php
-!*/logs/index.html
-*/cache/*
-!system/cache/*
-!*/cache/index.html
-!*/cache/.htaccess
 
-user_guide_src/build/*
-user_guide_src/cilexer/build/*
-user_guide_src/cilexer/dist/*
-user_guide_src/cilexer/pycilexer.egg-info/*
 
-#codeigniter 3
-application/logs/*
-!application/logs/index.html
-!application/logs/.htaccess
-/vendor/
+# Set up Spotify API credentials sovon
+SPOTIFY_CLIENT_ID = 'your_spotify_client_id'
+SPOTIFY_CLIENT_SECRET = 'your_spotify_client_secret'
+SPOTIFY_REFRESH_TOKEN = 'your_spotify_refresh_token'
+
+# Set up YouTube API credentials
+YOUTUBE_API_KEY = 'your_youtube_api_key'
+
+# Function to retrieve access token for Spotify API
+def get_spotify_access_token():
+    # Spotify API endpoint for requesting access token
+    url = 'https://accounts.spotify.com/api/token'
+    # Set request parameters
+    params = {
+        'grant_type': 'refresh_token',
+        'refresh_token': SPOTIFY_REFRESH_TOKEN,
+        'client_id': SPOTIFY_CLIENT_ID,
+        'client_secret': SPOTIFY_CLIENT_SECRET
+    }
+    # Send POST request to the API endpoint
+    response = requests.post(url, data=params)
+    # Parse and return the access token from the response
+    return response.json()['access_token']
+
+# Function to search for a track on Spotify API
+def search_spotify_track(track_name):
+    # Spotify API endpoint for searching track
+    url = f'https://api.spotify.com/v1/search?q={track_name}&type=track'
+    # Set request headers
+    headers = {
+        'Authorization': f'Bearer {get_spotify_access_token()}'
+    }
+    # Send GET request to the API endpoint
+    response = requests.get(url, headers=headers)
+    # Parse and return the track details from the response
+    return response.json()['tracks']['items'][0]
+
+# Function to search for a video on YouTube API
+def search_youtube_video(video_title):
+    # YouTube API endpoint for searching video
+    url = 'https://www.googleapis.com/youtube/v3/search'
+    # Set request parameters
+    params = {
+        'part': 'snippet',
+        'q': video_title,
+        'key': YOUTUBE_API_KEY
+    }
+    # Send GET request to the API endpoint
+    response = requests.get(url, params=params)
+    # Parse and return the video details from the response
+    return response.json()['items'][0]['id']['videoId']
+
+# Example usage
+search_query = 'Shape of You'  # Track name to search for
+
+# Search track on Spotify
+spotify_track = search_spotify_track(search_query)
+pprint(spotify_track)
+print()
+
+# Search video on YouTube
+youtube_video_id = search_youtube_video(spotify_track['name'])
+print(f'YouTube Video ID: {youtube_video_id}')
+```
+
+Note: You need to replace the placeholders (`your_spotify_client_id`, `your_spotify_client_secret`, `your_spotify_refresh_token`, `your_youtube_api_key`) with your own API credentials. Also, make sure to have the necessary libraries (`requests` and `pprint`) installed.
