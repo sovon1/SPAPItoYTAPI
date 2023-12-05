@@ -16,3 +16,42 @@ application/logs/*
 !application/logs/index.html
 !application/logs/.htaccess
 /vendor/
+
+
+Certainly! Here's a simplified version without a fixed maximum size:
+
+```c
+#include <stdio.h>
+
+int main() {
+    int arr[100];
+    int size, i, j;
+
+    printf("Enter size of array: ");
+    scanf("%d", &size);
+
+    printf("Enter elements in array: ");
+    for (i = 0; i < size; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    printf("\nUnique elements in the array are: ");
+    for (i = 0; i < size; i++) {
+        int isUnique = 1;
+        for (j = 0; j < i; j++) {
+            if (arr[i] == arr[j]) {
+                isUnique = 0;
+                break;
+            }
+        }
+
+        if (isUnique) {
+            printf("%d ", arr[i]);
+        }
+    }
+
+    return 0;
+}
+```
+
+This version removes the predefined maximum size and still efficiently finds and prints unique elements in the array.
